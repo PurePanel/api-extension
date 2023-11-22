@@ -1,5 +1,6 @@
 <?php namespace Visiosoft\ApiExtension\Http\Middleware;
 
+use Anomaly\UsersModule\User\UserModel;
 use Closure;
 use Exception;
 use Firebase\JWT\JWT;
@@ -18,10 +19,6 @@ class PureAuth
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->path() == 'api/login') {
-            return $next($request);
-        }
-
         $auth   = $request->header('Authorization');
         $token  = null;
         $apikey = null;
@@ -58,7 +55,7 @@ class PureAuth
         }
 
         if ($apikey) {
-            if (!Auth::where('apikey', $apikey)->first()) {
+            if (!UserModel::where('apikey', $apikey)->first()) {
                 return response()->json([
                     'message' => 'Given API Key is invalid.',
                     'errors' => 'Invalid API Key.'

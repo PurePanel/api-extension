@@ -7,24 +7,30 @@ use Visiosoft\ApiExtension\Http\Middleware\PureAuth;
 
 class ApiExtensionServiceProvider extends AddonServiceProvider
 {
-    protected $groupMiddleware = [
-        'api' => [
-            'throttle:api',
-            PureAuth::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
-    ];
-
     /**
-     * Map additional addon routes.
+     * Map additional addon routes and middlewares.
      *
      * @param Router $router
      */
     public function map(Router $router)
     {
         $this->mapRouters($router);
+
+        $middlewares = [
+            'throttle:api',
+            PureAuth::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ];
+
+        foreach ($middlewares as $middleware) {
+            $router->pushMiddlewareToGroup('apikey', $middleware);
+        }
     }
 
+    /**
+     * @param Router $router
+     * @return void
+     */
     public function mapRouters(Router $router)
     {
         $router->post('api/login', [AuthController::class, 'login']);
