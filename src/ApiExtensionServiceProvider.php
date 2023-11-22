@@ -17,7 +17,7 @@ class ApiExtensionServiceProvider extends AddonServiceProvider
         $this->mapRouters($router);
 
         $middlewares = [
-            'throttle:api',
+            'throttle:60,1',
             PureAuth::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ];
