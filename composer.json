@@ -1,0 +1,20 @@
+{
+  "name": "purepanel/api-extension",
+  "type": "streams-addon",
+  "description": "This module allows using API services for pure panel.",
+  "authors": [
+    {
+      "name": "Vedat Akdogan",
+      "email": "vedatakdogan@live.com",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Visiosoft\\ApiExtension\\": "src/"
+    }
+  },
+  "require": {
+    "firebase/php-jwt": "^5.2"
+  }
+}
