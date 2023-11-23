@@ -25,7 +25,10 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $user->setAttribute('apikey', Str::random(48));
+            if (!$user->getAttribute('apikey')) {
+                $user->setAttribute('apikey', Str::random(48));
+            }
+
             $user->setAttribute('jwt', JWT::encode(['iat' => time(), 'exp' => time() + config('visiosoft.extension.api::api.jwt_refresh')], config('visiosoft.extension.api::api.jwt_secret') . '-Rfs'));
             $user->save();
 
@@ -61,7 +64,6 @@ class AuthController extends Controller
                 ->first();
 
             if ($user) {
-                $user->setAttribute('apikey', Str::random(48));
                 $user->setAttribute('jwt', JWT::encode(['iat' => time(), 'exp' => time() + config('visiosoft.extension.api::api.jwt_refresh')], config('visiosoft.extension.api::api.jwt_secret') . '-Rfs'));
                 $user->save();
 
