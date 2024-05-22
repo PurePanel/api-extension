@@ -4,6 +4,7 @@ use Anomaly\UsersModule\User\UserModel;
 use Closure;
 use Exception;
 use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Firebase\JWT\ExpiredException;
@@ -13,14 +14,19 @@ class PureAuth
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        $auth   = $request->header('Authorization');
-        $token  = null;
+
+        if (Auth::check()) {
+            return $next($request);
+        }
+
+        $auth = $request->header('Authorization');
+        $token = null;
         $apikey = null;
 
         if (Str::startsWith($auth, 'Bearer ')) {
@@ -40,7 +46,7 @@ class PureAuth
 
         if ($token) {
             try {
-                JWT::decode($token, config('visiosoft.extension.api::api.jwt_secret').'-Acs', ['HS256']);
+                JWT::decode($token, config('visiosoft.extension.api::api.jwt_secret') . '-Acs', ['HS256']);
             } catch (ExpiredException $e) {
                 return response()->json([
                     'message' => 'Given token is expired.',
